@@ -25,6 +25,17 @@ class User extends Authenticatable
         'password',
     ];
 
+    public function roles()
+    {
+        $data = [
+            'admin' => 'admin',
+            'user' => 'user',
+            auth()->user()->role == 'su' ? 'su' : 'su' => 'su',
+        ];
+
+        return $data;
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *

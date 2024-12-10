@@ -1,12 +1,13 @@
 <x-modal name="editModal" :show="false" maxWidth="2xl">
-    <div class="p-6" x-data="{ edit_nama: '', edit_url: '' }" @open-modal.window="if ($event.detail.id === 'editModal') { edit_nama = $event.detail.edit_nama; edit_url = $event.detail.edit_url; show = true; }">
+    <div class="p-6" x-data="{ edit_nama: '', edit_url: '', edit_id: '' }" @open-modal.window="if ($event.detail.id === 'editModal') { edit_nama = $event.detail.edit_nama; edit_url = $event.detail.edit_url; edit_id = $event.detail.edit_id; show = true; }">
         <h2 class="text-lg font-medium text-gray-900 mb-5">
             Edit Divisi
         </h2>
         <hr>
         <div class="my-3">
-            <form @submit.prevent="confirmSubmission($event)" method="post">
+            <form :action="'/db/divisi/update/' + edit_id" method="post" @submit.prevent="confirmSubmission($event)">
                 @csrf
+                @method('PATCH')
                 <div class="mb-3">
                     <x-input-label for="nama" :value="__('Nama Divisi')" />
                     <x-text-input id="edit_nama" class="block mt-1 w-full" type="text" name="nama" x-model="edit_nama" required autofocus autocomplete="nama" />

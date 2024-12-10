@@ -5,15 +5,19 @@
         icon: 'success',
         title: 'Berhasil !!',
         text: '{{session('success')}}',
+        timer: null, // Menambahkan opsi ini untuk mencegah Swal.fire menutup sendiri
+        showConfirmButton: true
     });
 </script>
 @endif
 @if (session('error'))
 <script>
    Swal.fire({
-    icon: 'error',
+        icon: 'error',
         title: 'Gagal !!',
         text: '{{session('error')}}',
+        timer: null, // Menambahkan opsi ini untuk mencegah Swal.fire menutup sendiri
+        showConfirmButton: true
     })
 </script>
 @endif
@@ -29,6 +33,8 @@
         icon: 'error',
         title: 'Gagal !!',
         text: '{{$message}}',
+        timer: null, // Menambahkan opsi ini untuk mencegah Swal.fire menutup sendiri
+        showConfirmButton: true
     })
 </script>
 @endif

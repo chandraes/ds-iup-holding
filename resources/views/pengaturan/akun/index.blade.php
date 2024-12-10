@@ -1,13 +1,13 @@
 <x-app-layout>
     <x-slot name="header">
         <h1 class="font-semibold text-4xl text-gray-800 leading-tight">
-            {{ __('DIVISI') }}
+            {{ __('PENGGUNA') }}
         </h1>
         {{-- nav bar link dengan menggunakan svg yang saya punya --}}
 
     </x-slot>
-    @include('db.divisi.create')
-    @include('db.divisi.edit')
+    @include('pengaturan.akun.create')
+    @include('pengaturan.akun.edit')
     <div class="py-3">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
@@ -23,7 +23,7 @@
                                     </a>
                                 </td>
                                 <td class="p-2">
-                                    <a href="{{route('db')}}" class="flex items-center">
+                                    <a href="{{route('pengaturan')}}" class="flex items-center">
                                         <img src="{{asset('images/back.svg')}}" alt="dokumen" class="w-8 h-8 mr-2">
                                         <span class="text-sky-500 hover:text-sky-700 text-sm">Kembali</span>
                                     </a>
@@ -31,8 +31,8 @@
                                 <td class="p-2">
                                     <a href="#" x-data @click="$dispatch('open-modal', 'addBankInfo')"
                                         class="flex items-center">
-                                        <img src="{{asset('images/divisi.svg')}}" alt="dokumen" class="w-8 h-8 mr-2">
-                                        <span class="text-sky-500 hover:text-sky-700 text-sm">Tambah Divisi</span>
+                                        <img src="{{asset('images/pengguna.svg')}}" alt="dokumen" class="w-8 h-8 mr-2">
+                                        <span class="text-sky-500 hover:text-sky-700 text-sm">Tambah Pengguna</span>
                                     </a>
                                 </td>
                             </tr>
@@ -93,10 +93,13 @@
                                         <thead class="border-b border-t border-gray-200 bg-green-100">
                                             <tr>
                                                 <th scope="col"
+                                                    class="py-2 px-3 text-center font-normal text-sm text-gray-500 --exclude-from-ordering border-2">
+                                                    No</th>
+                                                <th scope="col"
                                                     class="py-1 group text-start font-normal focus:outline-none border-2">
                                                     <div
                                                         class="py-1 px-2.5 inline-flex items-center border border-transparent text-sm text-gray-500 rounded-md hover:border-gray-200">
-                                                        Divisi
+                                                        Nama
                                                         <svg class="size-3.5 ms-1 -me-0.5 text-gray-400"
                                                             xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -113,7 +116,7 @@
                                                     class="py-1 group text-start font-normal focus:outline-none border-2">
                                                     <div
                                                         class="py-1 px-2.5 inline-flex items-center border border-transparent text-sm text-gray-500 rounded-md hover:border-gray-200">
-                                                        URL
+                                                        Username
                                                         <svg class="size-3.5 ms-1 -me-0.5 text-gray-400"
                                                             xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -130,7 +133,7 @@
                                                     class="py-1 group text-start font-normal focus:outline-none border-2">
                                                     <div
                                                         class="py-1 px-2.5 inline-flex items-center border border-transparent text-sm text-gray-500 rounded-md hover:border-gray-200">
-                                                        Token
+                                                        Role
                                                         <svg class="size-3.5 ms-1 -me-0.5 text-gray-400"
                                                             xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -152,17 +155,19 @@
                                         <tbody class="divide-y divide-gray-200">
                                             @foreach ($data as $d)
                                             <tr>
+                                                <td class="p-5 whitespace-nowrap text-center text-sm font-medium border">
+                                                    {{$loop->iteration}}</td>
                                                 <td class="p-3 whitespace-nowrap text-sm font-medium text-gray-800 border">
-                                                    {{$d->nama}}</td>
-                                                <td class="p-3 whitespace-nowrap text-sm text-gray-800 border">{{$d->url}}</td>
-                                                <td class="p-3 whitespace-nowrap text-sm text-gray-800 border">{{$d->token}}</td>
+                                                    {{$d->name}}</td>
+                                                <td class="p-3 whitespace-nowrap text-sm text-gray-800 border">{{$d->username}}</td>
+                                                <td class="p-3 whitespace-nowrap text-sm text-gray-800 border">{{Str::upper($d->role)}}</td>
                                                 <td class="p-3 whitespace-nowrap text-center text-sm font-medium border">
                                                     <div class="inline-flex">
                                                         {{-- <x-link-button :href="route('bank-info.edit', $d)" class="m-2"><i class="fa fa-pencil"></i></x-link-button> --}}
-                                                        <x-secondary-button class="m-2 bg-yellow-300 hover:bg-yellow-600" type="button" @click="$dispatch('open-modal', { id: 'editModal', edit_nama: '{{ $d->nama }}', edit_url: '{{ $d->url }}', edit_id: '{{ $d->id }}' })">
+                                                        <x-secondary-button class="m-2 bg-yellow-300 hover:bg-yellow-600" type="button" @click="$dispatch('open-modal', { id: 'editModal', edit_name: '{{ $d->name }}', edit_username: '{{ $d->username }}', edit_role: '{{ $d->role }}', edit_id: '{{ $d->id }}' })">
                                                             <i class="fa fa-pencil"></i>
                                                         </x-secondary-button>
-                                                        <form x-data @submit.prevent="confirmDelete($event)" action="{{ route('db.divisi.delete', $d->id) }}" method="POST" class="inline">
+                                                        <form x-data @submit.prevent="confirmDelete($event)" action="{{ route('pengaturan.akun.delete', $d->id) }}" method="POST" class="inline">
                                                             @csrf
                                                             @method('DELETE')
                                                             <x-danger-button type="submit" class="m-2"><i class="fa fa-trash-can"></i></x-danger-button>

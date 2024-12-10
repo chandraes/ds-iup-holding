@@ -18,6 +18,13 @@ Route::middleware('auth')->group(function () {
     Route::group(['middleware' => ['role:su,admin']], function() {
         Route::prefix('pengaturan')->group(function() {
             Route::get('/', [PengaturanController::class, 'index'])->name('pengaturan');
+
+            Route::prefix('akun')->group(function(){
+                Route::get('/', [PengaturanController::class, 'akun'])->name('pengaturan.akun');
+                Route::post('/', [PengaturanController::class, 'akun_store'])->name('pengaturan.akun.store');
+                Route::patch('/{user}', [PengaturanController::class, 'akun_update'])->name('pengaturan.akun.update');
+                Route::delete('/{user}', [PengaturanController::class, 'akun_delete'])->name('pengaturan.akun.delete');
+            });
         });
 
         Route::prefix('db')->group(function(){
@@ -26,7 +33,7 @@ Route::middleware('auth')->group(function () {
             Route::prefix('divisi')->group(function(){
                 Route::get('/', [DatabaseController::class, 'divisi'])->name('db.divisi');
                 Route::post('/store', [DatabaseController::class, 'divisi_store'])->name('db.divisi.store');
-                Route::post('/update/{divisi}', [DatabaseController::class, 'divisi_update'])->name('db.divisi.update');
+                Route::patch('/update/{divisi}', [DatabaseController::class, 'divisi_update'])->name('db.divisi.update');
                 Route::delete('/delete/{divisi}', [DatabaseController::class, 'divisi_delete'])->name('db.divisi.delete');
                 Route::get('/regenerate-token/{divisi}', [DatabaseController::class, 'divisi_regenerate_token'])->name('db.divisi.regenerate_token');
             });
