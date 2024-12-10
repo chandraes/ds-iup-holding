@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Aplikasi;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -82,5 +83,38 @@ class PengaturanController extends Controller
         $user->delete();
 
         return redirect()->route('pengaturan.akun')->with('success', 'Data berhasil dihapus');
+    }
+
+    public function aplikasi()
+    {
+        $data = Aplikasi::first();
+        return view('pengaturan.aplikasi.index', [
+            'data' => $data,
+        ]);
+    }
+
+    public function aplikasi_store(Request $request)
+    {
+        $validatedData = $request->validate([
+            'nama' => 'required|string',
+            'logo' => 'nullable|image',
+        ]);
+
+        if ($request->hasFile('logo')) {
+            $extension = $request->file('logo')->getClientOriginalExtension();
+            $logoName = 'logo-aplikasi.' . $extension;
+            $request->file('logo')->move(public_path('images'), $logoName);
+            $validatedData['logo'] = $logoName;
+        }
+
+        $aplikasi = Aplikasi::first();
+
+        if ($aplikasi) {
+            $aplikasi->update($validatedData);
+        } else {
+            Aplikasi::create($validatedData);
+        }
+
+        return redirect()->route('pengaturan.aplikasi')->with('success', 'Data berhasil ditambahkan');
     }
 }

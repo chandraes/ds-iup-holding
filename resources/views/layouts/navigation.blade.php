@@ -5,8 +5,14 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
+                    @php
+                        $aplikasi = App\Models\Aplikasi::first();
+                    @endphp
+                    <a href="{{ route('dashboard') }}" class="flex items-center">
+                        <x-application-logo class="h-12 w-auto" />
+                        @if ($aplikasi)
+                        <span class="ml-3 text-xl font-semibold text-gray-800 leading-tight hidden sm:inline">{{ $aplikasi->nama }}</span>
+                        @endif
                     </a>
                 </div>
 

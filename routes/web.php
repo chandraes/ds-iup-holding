@@ -25,6 +25,11 @@ Route::middleware('auth')->group(function () {
                 Route::patch('/{user}', [PengaturanController::class, 'akun_update'])->name('pengaturan.akun.update');
                 Route::delete('/{user}', [PengaturanController::class, 'akun_delete'])->name('pengaturan.akun.delete');
             });
+
+            Route::prefix('aplikasi')->group(function(){
+                Route::get('/', [PengaturanController::class, 'aplikasi'])->name('pengaturan.aplikasi');
+                Route::post('/', [PengaturanController::class, 'aplikasi_store'])->name('pengaturan.aplikasi.store');
+            });
         });
 
         Route::prefix('db')->group(function(){
