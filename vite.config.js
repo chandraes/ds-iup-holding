@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import commonjs from 'vite-plugin-commonjs';
+import vitePluginRequire from 'vite-plugin-require';
 
 export default defineConfig({
     plugins: [
@@ -9,5 +10,6 @@ export default defineConfig({
             refresh: true,
         }),
         commonjs(),
+        vitePluginRequire(),
     ],
 });

@@ -21,6 +21,7 @@
         "datatables.net-dt": "^2.1.8",
         "jquery": "^3.7.1",
         "preline": "^2.6.0",
-        "vite-plugin-commonjs": "^0.10.4"
+        "vite-plugin-commonjs": "^0.10.4",
+        "vite-plugin-require": "^1.2.14"
     }
 }
