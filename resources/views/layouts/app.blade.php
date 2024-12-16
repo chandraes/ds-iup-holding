@@ -14,6 +14,7 @@
         <link rel="stylesheet" href="{{asset('assets/icons/font-awesome/css/all.css')}}">
         <script src="{{asset('assets/js/jquery.js')}}"></script>
         <script src="https://cdn.datatables.net/2.1.8/js/dataTables.min.js"></script>
+        <script src="./node_modules/preline/dist/preline.js"></script>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         <!-- Scripts -->
 
