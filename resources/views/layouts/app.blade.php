@@ -6,15 +6,15 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <title>{{ config('app.name', 'Laravel') }}</title>
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <link rel="stylesheet" href="{{asset('assets/icons/font-awesome/css/all.css')}}">
-        {{-- <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css"> --}}
-        {{-- <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css"> --}}
-
+        <script src="{{asset('assets/js/jquery.js')}}"></script>
+        <script src="https://cdn.datatables.net/2.1.8/js/dataTables.min.js"></script>
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
         <!-- Scripts -->
 
     </head>
@@ -61,11 +61,7 @@
                 // });
                 // });
             </script>
-            <script src="{{asset('assets/js/jquery.js')}}"></script>
-            <script src="https://cdn.datatables.net/2.1.8/js/dataTables.min.js"></script>
-            {{-- <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script> --}}
-            {{-- <script src="{{asset('assets/js/jquery.js')}}"></script> --}}
-            {{-- <script src="https://cdn.datatables.net/2.1.8/js/dataTables.min.js"></script> --}}
+
             @stack('js')
         </div>
     </body>
