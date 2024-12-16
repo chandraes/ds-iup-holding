@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PajakController;
 use App\Http\Controllers\PengaturanController;
 use App\Http\Controllers\RekapController;
 use App\Http\Controllers\DatabaseController;
@@ -48,6 +49,11 @@ Route::middleware('auth')->group(function () {
 
         Route::prefix('rekap')->group(function(){
             Route::get('/', [RekapController::class, 'index'])->name('rekap');
+        });
+
+        Route::group(['prefix' => 'pajak', 'as' => 'pajak.'], function () {
+            Route::get('/rekap-ppn', [PajakController::class, 'rekap_ppn'])->name('rekap-ppn');
+            
         });
     });
 

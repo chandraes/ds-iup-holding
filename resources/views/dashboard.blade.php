@@ -15,6 +15,12 @@
                         </a>
                     </div>
                     <div class="p-4 flex flex-col items-center">
+                        <a href="{{route('pajak.rekap-ppn')}}" class="text-decoration-none flex flex-col items-center">
+                            <img src="{{ asset('images/rekap-ppn.svg') }}" alt="" width="70">
+                            <h4 class="mt-2 text-sky-500 hover:text-sky-700">REKAP PPN</h4>
+                        </a>
+                    </div>
+                    <div class="p-4 flex flex-col items-center">
                         <a href="{{route('rekap')}}" class="text-decoration-none flex flex-col items-center">
                             <img src="{{ asset('images/rekap.svg') }}" alt="" width="70">
                             <h4 class="mt-2 text-sky-500 hover:text-sky-700">REKAP</h4>
