@@ -1,5 +1,6 @@
 import defaultTheme from 'tailwindcss/defaultTheme';
 import forms from '@tailwindcss/forms';
+import prelinePlugin from 'preline/plugin';
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -7,7 +8,7 @@ export default {
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
         './storage/framework/views/*.php',
         './resources/views/**/*.blade.php',
-        './node_modules/preline/dist/*.js',
+        'node_modules/preline/dist/*.js',
     ],
 
     theme: {
@@ -19,7 +20,7 @@ export default {
     },
 
     plugins: [
-        require('preline/plugin'),
         forms,
+        prelinePlugin,
     ],
 };
