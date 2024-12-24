@@ -29,7 +29,7 @@
                     <div class="mb-3">
                         <label for="nama" class="form-label">Nama Aplikasi</label>
                         <input type="text" class="form-control" name="nama" id="nama" aria-describedby="helpId"
-                            placeholder="" value="{{$data->nama}}" required/>
+                            placeholder="" value="{{$data ? $data->nama : ''}}" required/>
                     </div>
                 </div>
                 <div class="col-md-6">
