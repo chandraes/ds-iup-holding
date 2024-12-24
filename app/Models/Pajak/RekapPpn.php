@@ -3,6 +3,7 @@
 namespace App\Models\Pajak;
 
 use App\Models\db\Divisi;
+use App\Models\GroupWa;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -71,7 +72,7 @@ class RekapPpn extends Model
 
             $saldo = $this->saldoTerakhir() + $data['nominal'];
 
-            $this->create([
+            $store = $this->create([
                 'divisi_id' => $data['divisi_id'],
                 'uraian' => $data['uraian'],
                 'nominal' => $data['nominal'],
@@ -79,6 +80,33 @@ class RekapPpn extends Model
                 'saldo' => $saldo,
                 'masukan_id' => $data['masukan_id'],
             ]);
+
+            $db = new GroupWa();
+
+            $tujuan = $db->where('untuk', 'kas-besar')->first()->nama_group;
+
+            $divisi = Divisi::find($data['divisi_id']);
+
+            $pesan = "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n".
+                    "*Form PPN*\n".
+                    "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n\n".
+                    "Divisi  : ".$divisi->nama."\n".
+                    "Uraian  : ".$store->uraian."\n".
+                    "Nominal :  *Rp. ".number_format($store->nominal, 0, ',', '.')."*\n\n".
+                    // "Ditransfer ke rek:\n\n".
+                    // "Bank      : ".$store->bank."\n".
+                    // "Nama    : ".$store->nama_rek."\n".
+                    // "No. Rek : ".$store->no_rek."\n\n".
+                    "==========================\n".
+                    "Sisa Saldo Kas PPN: \n".
+                    "Rp. ".number_format($this->saldoTerakhir(), 0, ',', '.')."\n\n".
+                    // "Sisa Saldo Kas Besar  NON PPN: \n".
+                    // "Rp. ".number_format($kasNonPpn['saldo'], 0, ',', '.')."\n\n".
+                    // "Total Modal Investor : \n".
+                    // "Rp. ".number_format($totalModal, 0, ',', '.')."\n\n".
+                    "Terima kasih 🙏🙏🙏\n";
+
+            $db->sendWa($tujuan, $pesan);
 
             DB::commit();
 
