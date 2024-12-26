@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('kas_besars', function (Blueprint $table) {
             $table->id();
             $table->string('uraian')->nullable();
-            $table->bigInteger('nomor_deeposit')->nullable();
+            $table->bigInteger('nomor_deposit')->nullable();
             $table->boolean('jenis');
             $table->bigInteger('nominal');
             $table->bigInteger('saldo');
@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('nama_rek')->nullable();
             $table->string('bank')->nullable();
             $table->bigInteger('modal_investor')->nullable();
-            $table->bigInteger('modal_invenstor_terakhir');
+            $table->bigInteger('modal_investor_terakhir');
             $table->boolean('lain_lain')->default(0);
             $table->boolean('cost_operational')->default(0);
             $table->foreignId('divisi_id')->nullable()->constrained('divisis')->onDelete('set null');

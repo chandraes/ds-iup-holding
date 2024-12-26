@@ -22,6 +22,12 @@
             </a>
         </div>
         <div class="col-md-3 text-center mb-5 mt-3">
+            <a href="{{route('rekap')}}" class="text-decoration-none">
+                <img src="{{asset('images/rekap.svg')}}" alt="" width="70">
+                <h4 class="mt-3">REKAP</h4>
+            </a>
+        </div>
+        <div class="col-md-3 text-center mb-5 mt-3">
             <a href="{{route('pengaturan')}}" class="text-decoration-none">
                 <img src="{{asset('images/pengaturan.svg')}}" alt="" width="70">
                 <h4 class="mt-3">PENGATURAN</h4>

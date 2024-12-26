@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class PesanWa extends Model
 {
-    //
+    protected $guarded = [];
 }

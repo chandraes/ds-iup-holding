@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PengaturanController;
+use App\Http\Controllers\RekapController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -18,15 +19,15 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::group(['middleware' => ['role:su,admin']], function() {
         Route::prefix('pengaturan')->group(function () {
-            Route::get('/', [App\Http\Controllers\PengaturanController::class, 'index'])->name('pengaturan');
+            Route::get('/', [PengaturanController::class, 'index'])->name('pengaturan');
             Route::prefix('aplikasi')->group(function(){
-                Route::get('/', [App\Http\Controllers\PengaturanController::class, 'aplikasi'])->name('pengaturan.aplikasi');
-                Route::patch('/update', [App\Http\Controllers\PengaturanController::class, 'aplikasi_update'])->name('pengaturan.aplikasi.update');
+                Route::get('/', [PengaturanController::class, 'aplikasi'])->name('pengaturan.aplikasi');
+                Route::patch('/update', [PengaturanController::class, 'aplikasi_update'])->name('pengaturan.aplikasi.update');
             });
 
-            Route::get('/wa', [App\Http\Controllers\PengaturanController::class, 'group_wa'])->name('pengaturan.wa');
-            Route::get('/wa/get-wa-group', [App\Http\Controllers\PengaturanController::class, 'get_group_wa'])->name('pengaturan.wa.get-group-wa');
-            Route::patch('/wa/{group}/update', [App\Http\Controllers\PengaturanController::class, 'group_wa_update'])->name('pengaturan.wa.update');
+            Route::get('/wa', [PengaturanController::class, 'group_wa'])->name('pengaturan.wa');
+            Route::get('/wa/get-wa-group', [PengaturanController::class, 'get_group_wa'])->name('pengaturan.wa.get-group-wa');
+            Route::patch('/wa/{group}/update', [PengaturanController::class, 'group_wa_update'])->name('pengaturan.wa.update');
 
             Route::get('/akun', [PengaturanController::class, 'akun'])->name('pengaturan.akun');
             Route::group(['prefix' => 'akun', 'as' => 'pengaturan.akun.'], function () {
@@ -35,12 +36,12 @@ Route::group(['middleware' => 'auth'], function () {
                 Route::delete('/{user}', [PengaturanController::class, 'akun_delete'])->name('delete');
             });
 
-            Route::post('/password-konfirmasi', [App\Http\Controllers\PengaturanController::class, 'password_konfirmasi'])->name('pengaturan.password-konfirmasi');
-            Route::post('/password-konfirmasi/cek', [App\Http\Controllers\PengaturanController::class, 'password_konfirmasi_cek'])->name('pengaturan.password-konfirmasi-cek');
+            Route::post('/password-konfirmasi', [PengaturanController::class, 'password_konfirmasi'])->name('pengaturan.password-konfirmasi');
+            Route::post('/password-konfirmasi/cek', [PengaturanController::class, 'password_konfirmasi_cek'])->name('pengaturan.password-konfirmasi-cek');
 
             Route::prefix('batasan')->group(function(){
-                Route::get('/', [App\Http\Controllers\PengaturanController::class, 'batasan'])->name('pengaturan.batasan');
-                Route::patch('/update/{batasan}', [App\Http\Controllers\PengaturanController::class, 'batasan_update'])->name('pengaturan.batasan.update');
+                Route::get('/', [PengaturanController::class, 'batasan'])->name('pengaturan.batasan');
+                Route::patch('/update/{batasan}', [PengaturanController::class, 'batasan_update'])->name('pengaturan.batasan.update');
             });
         });
 
@@ -65,6 +66,14 @@ Route::group(['middleware' => 'auth'], function () {
         Route::group(['prefix' => 'pajak', 'as' => 'pajak.'], function () {
             Route::get('/rekap-ppn', [App\Http\Controllers\PajakController::class, 'rekap_ppn'])->name('rekap-ppn');
             // Route::get('/rekap-ppn/{bulan}/{tahun}', [App\Http\Controllers\PajakController::class, 'rekap_ppn'])->name('rekap-ppn.bulan-tahun');
+        });
+
+        Route::get('/rekap', [RekapController::class, 'index'])->name('rekap');
+        Route::group(['prefix' => 'rekap', 'as' => 'rekap.'], function() {
+            Route::prefix('kas-besar')->group(function(){
+                Route::get('/', [RekapController::class, 'kas_besar'])->name('kas-besar');
+                Route::get('/print/{bulan}/{tahun}', [RekapController::class, 'kas_besar_print'])->name('kas-besar.print');
+            });
         });
     });
 

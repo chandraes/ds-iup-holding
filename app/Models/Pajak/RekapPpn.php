@@ -4,6 +4,8 @@ namespace App\Models\Pajak;
 
 use App\Models\db\Divisi;
 use App\Models\GroupWa;
+use App\Models\KasBesar;
+use App\Models\Rekening;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -88,7 +90,7 @@ class RekapPpn extends Model
             $divisi = Divisi::find($data['divisi_id']);
 
             $pesan = "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n".
-                    "*Form PPN*\n".
+                    "*Form PPN Masukan*\n".
                     "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n\n".
                     "Divisi  : ".$divisi->nama."\n".
                     "Uraian  : ".$store->uraian."\n".
@@ -122,6 +124,7 @@ class RekapPpn extends Model
         try {
             DB::beginTransaction();
 
+
             $saldo = $this->saldoTerakhir() - $data['nominal'];
 
             $store = $this->create([
@@ -133,7 +136,6 @@ class RekapPpn extends Model
                 'keluaran_id' => $data['keluaran_id'],
             ]);
 
-
             $db = new GroupWa();
 
             $tujuan = $db->where('untuk', 'kas-besar')->first()->nama_group;
@@ -141,7 +143,7 @@ class RekapPpn extends Model
             $divisi = Divisi::find($data['divisi_id']);
 
             $pesan = "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n".
-                    "*Form PPN*\n".
+                    "*Form PPN Keluaran*\n".
                     "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n\n".
                     "Divisi  : ".$divisi->nama."\n".
                     "Uraian  : ".$store->uraian."\n".
@@ -164,11 +166,77 @@ class RekapPpn extends Model
             DB::commit();
 
             return true;
+
         } catch (\Throwable $th) {
             //throw $th;
             DB::rollBack();
 
             return false;
+        }
+    }
+
+    public function kasBesar($data)
+    {
+        try {
+            DB::beginTransaction();
+
+            $db = new KasBesar();
+
+            $saldo = $db->saldoTerakhir() + $data['nominal'];
+            $rekening = Rekening::where('untuk', 'kas-besar')->first();
+
+            $store = $db->create([
+                'divisi_id' => $data['divisi_id'],
+                'uraian' => $data['uraian'],
+                'nominal' => $data['nominal'],
+                'jenis' => 1,
+                'saldo' => $saldo,
+                'no_rek' => $rekening->no_rek,
+                'nama_rek' => $rekening->nama_rek,
+                'bank' => $rekening->bank,
+                'modal_investor_terakhir' => $db->modalInvestorTerakhir()
+            ]);
+
+            $dbWa = new GroupWa();
+
+            $tujuan = $dbWa->where('untuk', 'kas-besar')->first()->nama_group;
+            $saldoPpn = $this->saldoTerakhir();
+
+            $divisi = Divisi::find($data['divisi_id']);
+
+            $pesan = "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n".
+                    "*Form Kas Besar*\n".
+                    "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n\n".
+                    "Divisi  : ".$divisi->nama."\n".
+                    "Uraian  : ".$store->uraian."\n".
+                    "Nominal :  *Rp. ".number_format($store->nominal, 0, ',', '.')."*\n\n".
+                    "Ditransfer ke rek:\n\n".
+                    "Bank      : ".$rekening->bank."\n".
+                    "Nama    : ".$rekening->nama_rek."\n".
+                    "No. Rek : ".$rekening->no_rek."\n\n".
+                    "==========================\n".
+                    "Sisa Saldo Kas Besar: \n".
+                    "Rp. ".number_format($db->saldoTerakhir(), 0, ',', '.')."\n\n".
+                    "Sisa Saldo PPN: \n".
+                    "Rp. ".number_format($saldoPpn, 0, ',', '.')."\n\n".
+                    // "Total Modal Investor : \n".
+                    // "Rp. ".number_format($totalModal, 0, ',', '.')."\n\n".
+                    "Terima kasih 🙏🙏🙏\n";
+
+            $dbWa->sendWa($tujuan, $pesan);
+
+            DB::commit();
+
+            return [
+                'status' => 'success',
+                'message' => 'Data berhasil disimpan'
+            ];
+        } catch (\Throwable $th){
+            DB::rollBack();
+            return [
+                'status' => 'error',
+                'message' => $th->getMessage(),
+            ];
         }
     }
 }
