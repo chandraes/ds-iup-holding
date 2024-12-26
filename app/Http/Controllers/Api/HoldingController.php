@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\db\Divisi;
 use App\Models\Pajak\RekapPpn;
+use App\Models\Rekening;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
@@ -12,6 +13,21 @@ class HoldingController extends Controller
 {
     public function checkConnection(Request $request)
     {
+
+        $token = $request->bearerToken();
+        $referer = $request->headers->get('referer');
+
+        // Mencari divisi berdasarkan token
+        $divisi = Divisi::where('token', $token)->first();
+
+        // Cek apakah divisi ditemukan dan URL referer sesuai
+        if (!$divisi || $referer != $divisi->url) {
+            return response()->json([
+                'code' => 401,
+                'message' => 'Unauthorized'
+            ], 401);
+        }
+
         return response()->json([
             'code' => 200,
             'message' => 'Connected to Holding API'
@@ -166,5 +182,25 @@ class HoldingController extends Controller
                 'errors' => $th->getMessage(),
             ], 422);
         }
+    }
+
+    public function getRekening(Request $request)
+    {
+        $token = $request->bearerToken();
+        $referer = $request->headers->get('referer');
+
+        $divisi = Divisi::where('token', $token)->first();
+
+        // Cek apakah divisi ditemukan dan URL referer sesuai
+        if (!$divisi || $referer != $divisi->url) {
+            return response()->json([
+                'code' => 401,
+                'message' => 'Unauthorized'
+            ], 401);
+        }
+
+        $rekening = Rekening::select('no_rek', 'nama_rek', 'bank')->where('untuk', 'kas-besar')->first();
+
+        return response()->json($rekening);
     }
 }
