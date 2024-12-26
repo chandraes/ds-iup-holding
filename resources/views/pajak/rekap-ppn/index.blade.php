@@ -87,7 +87,7 @@
                     <td class="text-start align-middle">
 
                         {{$d->uraian}}
-                      
+
                     </td>
                     <td class="text-end align-middle">
                         @if ($d->masukan_id || $d->jenis == 1)
@@ -124,6 +124,16 @@
                 </tr>
             </tfoot>
         </table>
+
+        <div class="row mt-3 justify-content-end">
+            <div class="col-md-4">
+                <div class="row">
+                    <button class="btn btn-success" @if ($saldoSebelumnya + $masuk - $keluar >= 0)
+                        disabled
+                    @endif > <i class="fa fa-money me-2"></i>Bayar PPN</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 @endsection
@@ -136,6 +146,7 @@
     $(document).ready(function() {
         $('#rekapTable').DataTable({
             "paging": false,
+            'info': false,
             "ordering": false,
             "searching": false,
             "scrollCollapse": true,
