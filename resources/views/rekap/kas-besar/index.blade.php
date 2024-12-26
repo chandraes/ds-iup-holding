@@ -70,7 +70,7 @@
                 <th class="text-center align-middle">TGL</th>
                 <th class="text-center align-middle">URAIAN</th>
                 <th class="text-center align-middle">DEPOSIT</th>
-                <th class="text-center align-middle">KAS<br>KECIL</th>
+                <th class="text-center align-middle">Divisi</th>
                 <th class="text-center align-middle">MASUK</th>
                 <th class="text-center align-middle">KELUAR</th>
                 <th class="text-center align-middle">SALDO</th>
@@ -103,7 +103,7 @@
                         @endif
                     </td>
                     <td class="text-center align-middle">{{$d->kode_deposit}}</td>
-                    <td class="text-center align-middle">{{$d->kode_kas_kecil}}</td>
+                    <td class="text-center align-middle">{{$d->divisi ? $d->divisi->nama : ''}}</td>
                     <td class="text-end align-middle">{{$d->jenis === 1 ?
                        $d->nf_nominal : ''}}
                     </td>
