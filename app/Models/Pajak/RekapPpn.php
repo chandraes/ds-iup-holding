@@ -90,7 +90,7 @@ class RekapPpn extends Model
             $divisi = Divisi::find($data['divisi_id']);
 
             $pesan = "🟤🟤🟤🟤🟤🟤🟤🟤🟤\n".
-                    "*Form PPN Masukan*\n".
+                    "*PPN Masukan*\n".
                     "🟤🟤🟤🟤🟤🟤🟤🟤🟤\n\n".
                     "Divisi  : ".$divisi->nama."\n".
                     "Uraian  : ".$store->uraian."\n".
@@ -143,7 +143,7 @@ class RekapPpn extends Model
             $divisi = Divisi::find($data['divisi_id']);
 
             $pesan = "🟤🟤🟤🟤🟤🟤🟤🟤🟤\n".
-                    "*Form PPN Keluaran*\n".
+                    "*PPN Keluaran*\n".
                     "🟤🟤🟤🟤🟤🟤🟤🟤🟤\n\n".
                     "Divisi  : ".$divisi->nama."\n".
                     "Uraian  : ".$store->uraian."\n".
