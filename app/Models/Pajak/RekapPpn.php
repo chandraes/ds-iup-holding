@@ -100,7 +100,7 @@ class RekapPpn extends Model
                     // "Nama    : ".$store->nama_rek."\n".
                     // "No. Rek : ".$store->no_rek."\n\n".
                     "==========================\n".
-                    "Sisa Saldo Kas PPN: \n".
+                    "Sisa Saldo PPN: \n".
                     "Rp. ".number_format($this->saldoTerakhir(), 0, ',', '.')."\n\n".
                     // "Sisa Saldo Kas Besar  NON PPN: \n".
                     // "Rp. ".number_format($kasNonPpn['saldo'], 0, ',', '.')."\n\n".
