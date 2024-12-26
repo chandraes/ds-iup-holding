@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\db\Divisi;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
@@ -12,6 +13,11 @@ class KasBesar extends Model
     public function dataTahun()
     {
         return $this->selectRaw('YEAR(created_at) as tahun')->groupBy('tahun')->get();
+    }
+
+    public function divisi()
+    {
+        return $this->belongsTo(Divisi::class);
     }
 
     public function getKodeDepositAttribute()
@@ -51,7 +57,7 @@ class KasBesar extends Model
 
     public function kasBesar($month, $year)
     {
-        return $this->whereMonth('created_at', $month)->whereYear('created_at', $year)->get();
+        return $this->with('divisi')->whereMonth('created_at', $month)->whereYear('created_at', $year)->get();
     }
 
     public function kasBesarByMonth($month, $year)
