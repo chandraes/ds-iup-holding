@@ -43,4 +43,14 @@ class PajakController extends Controller
             'tahunSebelumnya' => $tahunSebelumnya
         ]);
     }
+
+    public function bayar_ppn()
+    {
+
+        $db = new RekapPpn();
+
+        $req = $db->bayar_ppn();
+
+        return redirect()->back()->with($req['status'], $req['message']);
+    }
 }

@@ -65,6 +65,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/pajak', [App\Http\Controllers\PajakController::class, 'index'])->name('pajak');
         Route::group(['prefix' => 'pajak', 'as' => 'pajak.'], function () {
             Route::get('/rekap-ppn', [App\Http\Controllers\PajakController::class, 'rekap_ppn'])->name('rekap-ppn');
+            Route::post('/rekap-ppn/bayar', [App\Http\Controllers\PajakController::class, 'bayar_ppn'])->name('rekap-ppn.bayar');
             // Route::get('/rekap-ppn/{bulan}/{tahun}', [App\Http\Controllers\PajakController::class, 'rekap_ppn'])->name('rekap-ppn.bulan-tahun');
         });
 

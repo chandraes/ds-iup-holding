@@ -239,4 +239,93 @@ class RekapPpn extends Model
             ];
         }
     }
+
+    public function bayar_ppn()
+    {
+
+        $dbKas = new KasBesar();
+
+        $saldoPpn = $this->saldoTerakhir();
+
+        if ($saldoPpn > 0) {
+            return [
+                'status' => 'error',
+                'message' => 'Belum bisa dilakukan pembayaran PPN karena saldo PPN Masukan masih tersedia!'
+            ];
+        }
+
+        $saldoKasBesar = $dbKas->saldoTerakhir();
+
+        // buat saldoppn menjadi positif
+        $saldoPpn = abs($saldoPpn);
+
+        if ($saldoKasBesar < $saldoPpn) {
+            return [
+                'status' => 'error',
+                'message' => 'Saldo Kas Besar tidak mencukupi untuk pembayaran PPN!'
+            ];
+        }
+
+        try {
+            DB::beginTransaction();
+
+            $saldo = $dbKas->saldoTerakhir() - $saldoPpn;
+
+            $store = $dbKas->create([
+                'uraian' => 'Pembayaran PPN',
+                'nominal' => $saldoPpn,
+                'jenis' => 0,
+                'saldo' => $saldo,
+                'no_rek' => 'PAJAK',
+                'nama_rek' => 'PAJAK',
+                'bank' => 'PAJAK',
+                'modal_investor_terakhir' => $dbKas->modalInvestorTerakhir()
+            ]);
+
+            $rekap = $this->create([
+                'uraian' => 'Kas Besar',
+                'nominal' => $saldoPpn,
+                'jenis' => 1,
+                'saldo' => $this->saldoTerakhir() + $saldoPpn,
+            ]);
+
+            $dbWa = new GroupWa();
+
+            $tujuan = $dbWa->where('untuk', 'kas-besar')->first()->nama_group;
+
+            $pesan = "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n".
+                    "*Pembayaran PPN*\n".
+                    "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n\n".
+                    "Uraian  : ".$store->uraian."\n".
+                    "Nominal :  *Rp. ".number_format($store->nominal, 0, ',', '.')."*\n\n".
+                    "Ditransfer ke rek:\n\n".
+                    "Bank      : ".$store->bank."\n".
+                    "Nama    : ".$store->nama_rek."\n".
+                    "No. Rek : ".$store->no_rek."\n\n".
+                    "==========================\n".
+                    "Sisa Saldo Kas Besar: \n".
+                    "Rp. ".number_format($dbKas->saldoTerakhir(), 0, ',', '.')."\n\n".
+                    // "Sisa Saldo PPN: \n".
+                    // "Rp. ".number_format($saldoPpn, 0, ',', '.')."\n\n".
+                    // "Total Modal Investor : \n".
+                    // "Rp. ".number_format($totalModal, 0, ',', '.')."\n\n".
+                    "Terima kasih 🙏🙏🙏\n";
+
+            $dbWa->sendWa($tujuan, $pesan);
+
+            DB::commit();
+
+            return [
+                'status' => 'success',
+                'message' => 'Data berhasil disimpan'
+            ];
+        } catch (\Throwable $th){
+            DB::rollBack();
+            return [
+                'status' => 'error',
+                'message' => $th->getMessage(),
+            ];
+        }
+
+    }
 }

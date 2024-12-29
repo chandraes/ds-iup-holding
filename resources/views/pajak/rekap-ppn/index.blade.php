@@ -101,7 +101,7 @@
                         @endif
                     </td>
                     <td class="text-end align-middle">
-                        @if ($d->keluaran_id)
+                        @if ($d->keluaran_id || $d->jenis == 0)
                         {{$d->nf_nominal}}
                         @php
                              $keluar += $d->nominal;
@@ -129,10 +129,17 @@
             <div class="col-md-4">
                 <div class="row">
                     <button class="btn btn-success" @if ($saldoSebelumnya + $masuk - $keluar >= 0)
-                        disabled
+                        disabled @else onclick='bayarPpn()'
                     @endif > <i class="fa fa-money me-2"></i>Bayar PPN</button>
                 </div>
             </div>
+            @if ($saldoSebelumnya + $masuk - $keluar < 0)
+            {{-- form post --}}
+            <form action="{{route('pajak.rekap-ppn.bayar')}}" method="post" id="formBayarPpn">
+                @csrf
+
+            </form>
+            @endif
         </div>
     </div>
 </div>
@@ -143,6 +150,24 @@
 @push('js')
 <script src="{{asset('assets/js/dt5.min.js')}}"></script>
 <script>
+
+    function bayarPpn()
+    {
+        Swal.fire({
+            title: 'Bayar PPN',
+            text: "Apakah anda yakin akan membayar PPN?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Bayar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $('#formBayarPpn').submit();
+            }
+        });
+    }
+
     $(document).ready(function() {
         $('#rekapTable').DataTable({
             "paging": false,
