@@ -293,9 +293,9 @@ class RekapPpn extends Model
 
             $tujuan = $dbWa->where('untuk', 'kas-besar')->first()->nama_group;
 
-            $pesan = "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n".
+            $pesan = "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n".
                     "*Pembayaran PPN*\n".
-                    "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n\n".
+                    "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n\n".
                     "Uraian  : ".$store->uraian."\n".
                     "Nominal :  *Rp. ".number_format($store->nominal, 0, ',', '.')."*\n\n".
                     "Ditransfer ke rek:\n\n".
