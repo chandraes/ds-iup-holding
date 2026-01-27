@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h1 class="font-semibold text-4xl text-gray-800 leading-tight">
-            {{ __('REKAP PP') }}
+            {{ __('REKAP PPN') }}
         </h1>
         {{-- nav bar link dengan menggunakan svg yang saya punya --}}
 
