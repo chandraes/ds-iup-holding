@@ -2,14 +2,21 @@
 
 namespace App\Models\Pajak;
 
+use App\Models\db\Divisi;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class RekapPpn extends Model
 {
     protected $guarded = ['id'];
 
     protected $appends = ['tanggal', 'nf_nominal', 'nf_saldo'];
+
+    public function divisi()
+    {
+        return $this->belongsTo(Divisi::class);
+    }
 
     public function dataTahun()
     {
@@ -18,12 +25,12 @@ class RekapPpn extends Model
 
     public function rekapByMonth($month, $year)
     {
-        return $this->whereMonth('created_at', $month)->whereYear('created_at', $year)->get();
+        return $this->with(['divisi'])->whereMonth('created_at', $month)->whereYear('created_at', $year)->get();
     }
 
     public function rekapByMonthSebelumnya($month, $year)
     {
-        $data = $this->whereMonth('created_at', $month)
+        $data = $this->with(['divisi'])->whereMonth('created_at', $month)
             ->whereYear('created_at', $year)
             ->orderBy('id', 'desc')
             ->first();
@@ -55,5 +62,30 @@ class RekapPpn extends Model
     public function saldoTerakhir()
     {
         return $this->orderBy('id', 'desc')->first()->saldo ?? 0;
+    }
+
+    public function masukan($data)
+    {
+        try {
+            DB::beginTransaction();
+
+            $saldo = $this->saldoTerakhir() + $data['nominal'];
+
+            $this->create([
+                'divisi_id' => $data['divisi_id'],
+                'uraian' => $data['uraian'],
+                'nominal' => $data['nominal'],
+                'jenis' => 1,
+                'saldo' => $saldo,
+                'masukan_id' => $data['masukan_id'],
+            ]);
+
+            DB::commit();
+
+            return true;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return false;
+        }
     }
 }

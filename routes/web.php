@@ -18,31 +18,38 @@ Route::middleware('auth')->group(function () {
     // Start Routing Admin
 
     Route::group(['middleware' => ['role:su,admin']], function() {
-        Route::prefix('pengaturan')->group(function() {
-            Route::get('/', [PengaturanController::class, 'index'])->name('pengaturan');
 
-            Route::prefix('akun')->group(function(){
-                Route::get('/', [PengaturanController::class, 'akun'])->name('pengaturan.akun');
-                Route::post('/', [PengaturanController::class, 'akun_store'])->name('pengaturan.akun.store');
-                Route::patch('/{user}', [PengaturanController::class, 'akun_update'])->name('pengaturan.akun.update');
-                Route::delete('/{user}', [PengaturanController::class, 'akun_delete'])->name('pengaturan.akun.delete');
+        Route::get('/pengaturan', [PengaturanController::class, 'index'])->name('pengaturan');
+        Route::group(['prefix' => 'pengaturan', 'as' => 'pengaturan.'], function () {
+
+            Route::get('/akun', [PengaturanController::class, 'akun'])->name('akun');
+            Route::group(['prefix' => 'akun', 'as' => 'akun.'], function () {
+                Route::post('/', [PengaturanController::class, 'akun_store'])->name('store');
+                Route::patch('/{user}', [PengaturanController::class, 'akun_update'])->name('update');
+                Route::delete('/{user}', [PengaturanController::class, 'akun_delete'])->name('delete');
             });
 
             Route::prefix('aplikasi')->group(function(){
-                Route::get('/', [PengaturanController::class, 'aplikasi'])->name('pengaturan.aplikasi');
-                Route::post('/', [PengaturanController::class, 'aplikasi_store'])->name('pengaturan.aplikasi.store');
+                Route::get('/', [PengaturanController::class, 'aplikasi'])->name('aplikasi');
+                Route::post('/', [PengaturanController::class, 'aplikasi_store'])->name('aplikasi.store');
+            });
+
+            Route::get('/group-wa', [PengaturanController::class, 'group_wa'])->name('group-wa');
+            Route::group(['prefix' => 'group-wa', 'as' => 'group-wa.'], function () {
+                Route::get('/get-group-wa', [PengaturanController::class, 'get_group_wa'])->name('get-group-wa');
+                Route::patch('/{group}', [PengaturanController::class, 'group_wa_update'])->name('update');
             });
         });
 
         Route::prefix('db')->group(function(){
             Route::get('/', [DatabaseController::class, 'index'])->name('db');
 
-            Route::prefix('divisi')->group(function(){
-                Route::get('/', [DatabaseController::class, 'divisi'])->name('db.divisi');
-                Route::post('/store', [DatabaseController::class, 'divisi_store'])->name('db.divisi.store');
-                Route::patch('/update/{divisi}', [DatabaseController::class, 'divisi_update'])->name('db.divisi.update');
-                Route::delete('/delete/{divisi}', [DatabaseController::class, 'divisi_delete'])->name('db.divisi.delete');
-                Route::get('/regenerate-token/{divisi}', [DatabaseController::class, 'divisi_regenerate_token'])->name('db.divisi.regenerate_token');
+            Route::get('/divisi', [DatabaseController::class, 'divisi'])->name('db.divisi');
+            Route::group(['prefix' => 'divisi', 'as' => 'db.divisi.'], function () {
+                Route::post('/store', [DatabaseController::class, 'divisi_store'])->name('store');
+                Route::patch('/update/{divisi}', [DatabaseController::class, 'divisi_update'])->name('update');
+                Route::delete('/delete/{divisi}', [DatabaseController::class, 'divisi_delete'])->name('delete');
+                Route::get('/regenerate-token/{divisi}', [DatabaseController::class, 'divisi_regenerate_token'])->name('regenerate_token');
             });
 
         });
@@ -53,7 +60,7 @@ Route::middleware('auth')->group(function () {
 
         Route::group(['prefix' => 'pajak', 'as' => 'pajak.'], function () {
             Route::get('/rekap-ppn', [PajakController::class, 'rekap_ppn'])->name('rekap-ppn');
-            
+
         });
     });
 

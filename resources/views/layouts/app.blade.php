@@ -22,14 +22,43 @@
     <style>
         .dt-layout-row:has(.dt-search),
         .dt-layout-row:has(.dt-length),
-        .dt-layout-row:has(.dt-paging) {
+        .dt-layout-row:has(.dt-paging),
+        {
           display: none !important;
         }
         .dt-scroll-body thead {
             display: none !important;
         }
+
+        .loader {
+            border: 16px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 16px solid #3498db;
+            width: 120px;
+            height: 120px;
+            -webkit-animation: spin 2s linear infinite; /* Safari */
+            animation: spin 2s linear infinite;
+        }
+
+        /* Safari */
+        @-webkit-keyframes spin {
+            0% { -webkit-transform: rotate(0deg); }
+            100% { -webkit-transform: rotate(360deg); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        #loader {
+            z-index: 9999; /* Ensure loader has the highest z-index */
+        }
       </style>
     <body class="font-sans antialiased">
+        <div id="loader" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50 hidden">
+            <div class="loader"></div>
+        </div>
         <div class="min-h-screen bg-gray-100">
             @include('layouts.navigation')
 

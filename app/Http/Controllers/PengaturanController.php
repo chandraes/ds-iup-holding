@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Aplikasi;
+use App\Models\GroupWa;
 use App\Models\User;
+use App\Services\WaStatus;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 
@@ -19,7 +22,7 @@ class PengaturanController extends Controller
     {
         $db = new User();
 
-        if (auth()->user()->role == 'su') {
+        if (Auth::user()->role == 'su') {
             $data = $db->get();
         } else {
             $data = $db->where('role', '!=', 'su')->get();
@@ -116,5 +119,33 @@ class PengaturanController extends Controller
         }
 
         return redirect()->route('pengaturan.aplikasi')->with('success', 'Data berhasil ditambahkan');
+    }
+
+    public function group_wa()
+    {
+        $data = GroupWa::whereNot('untuk', 'team')->get();
+        return view('pengaturan.wa.index', [
+            'data' => $data
+        ]);
+    }
+
+    public function get_group_wa()
+    {
+        $wa = new WaStatus();
+        $group = $wa->getGroup();
+
+        return response()->json($group['data']);
+    }
+
+    public function group_wa_update(Request $request, GroupWa $group)
+    {
+        $data = $request->validate([
+            'nama_group' => 'required',
+            'group_id' => 'required',
+        ]);
+
+        $group->update($data);
+
+        return redirect()->back()->with('success', 'Data berhasil diubah.');
     }
 }
