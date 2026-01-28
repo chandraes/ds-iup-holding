@@ -14,11 +14,28 @@ class DatabaseController extends Controller
 
     public function divisi(Request $request)
     {
-        $data = Divisi::all();
+       $query = Divisi::query();
 
-        return view('db.divisi.index', [
-            'data' => $data
-        ]);
+        // 1. Handle Search
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where('nama', 'like', "%{$search}%")
+                ->orWhere('url', 'like', "%{$search}%");
+        }
+
+        // 2. Handle Sorting (Default: ID descending)
+        $sortField = $request->input('sort', 'id');
+        $sortDirection = $request->input('direction', 'desc');
+
+        // Whitelist kolom agar user tidak inject SQL aneh-aneh
+        if (in_array($sortField, ['nama', 'url', 'token', 'id'])) {
+            $query->orderBy($sortField, $sortDirection);
+        }
+
+        // 3. Pagination (Gunakan paginate, BUKAN get)
+        $data = $query->paginate(10)->withQueryString(); // withQueryString penting agar filter tidak hilang saat ganti halaman
+
+        return view('db.divisi.index', compact('data'));
     }
 
     public function divisi_store(Request $request)
