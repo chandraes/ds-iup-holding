@@ -66,4 +66,53 @@ class HoldingController extends Controller
             ], 422);
         }
     }
+
+     public function ppn_keluaran(Request $request)
+    {
+        try {
+            // Validasi data request
+            $data = $request->validate([
+                'uraian' => 'required',
+                'nominal' => 'required',
+                'keluaran_id' => 'required',
+            ]);
+
+            // Mendapatkan token dan referer dari request
+            $token = $request->bearerToken();
+            $referer = $request->headers->get('referer');
+
+            // Mencari divisi berdasarkan token
+            $divisi = Divisi::where('token', $token)->first();
+
+            // Cek apakah divisi ditemukan dan URL referer sesuai
+            if (!$divisi || $referer != $divisi->url) {
+                return response()->json([
+                    'code' => 401,
+                    'message' => 'Unauthorized'
+                ], 401);
+            }
+
+            // Menghapus titik dari nominal
+            $data['nominal'] = str_replace('.', '', $data['nominal']);
+            $data['divisi_id'] = $divisi->id;
+
+            $db = new RekapPpn();
+
+            $store = $db->keluaran($data);
+
+            // Kembalikan respons berdasarkan hasil penyimpanan
+            return response()->json([
+                'code' => $store ? 200 : 500,
+                'message' => $store ? 'Data PPN Keluaran berhasil disimpan' : 'Data PPN Keluaran gagal disimpan'
+            ], $store ? 200 : 500);
+
+        } catch (ValidationException $e) {
+            // Kembalikan respons error validasi
+            return response()->json([
+                'code' => 422,
+                'message' => 'Data PPN Keluaran gagal disimpan',
+                'errors' => $e->errors(),
+            ], 422);
+        }
+    }
 }

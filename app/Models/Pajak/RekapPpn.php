@@ -88,4 +88,33 @@ class RekapPpn extends Model
             return false;
         }
     }
+
+     public function keluaran($data)
+    {
+        try {
+            DB::beginTransaction();
+
+            $saldo = $this->saldoTerakhir() - $data['nominal'];
+
+            if ($saldo < 0) {
+                return false;
+            }
+            
+            $this->create([
+                'divisi_id' => $data['divisi_id'],
+                'uraian' => $data['uraian'],
+                'nominal' => $data['nominal'],
+                'jenis' => 1,
+                'saldo' => $saldo,
+                'masukan_id' => $data['masukan_id'],
+            ]);
+
+            DB::commit();
+
+            return true;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return false;
+        }
+    }
 }
